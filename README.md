@@ -2,7 +2,7 @@
 A quick and easy wrapper for retrieving information async while displaying a loader
 
 ## Quick
-![alt text](https://scrumble.nl/wp-content/uploads/2020/03/quick.png "Quick image")
+![alt text](https://scrumble.nl/wp-content/uploads/2020/06/quick_logo_loader.png "Quick image")
 ## Installation
 
 ```sh
