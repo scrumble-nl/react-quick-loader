@@ -1,0 +1,64 @@
+{
+  "name": "@scrumble-nl/react-quick-loader",
+  "version": "1.0.0",
+  "description": "A quick and easy wrapper for retrieving information async while displaying a loader.\n\n",
+  "main": "lib/quick-loader.js",
+  "types": "lib/quick-loader.d.ts",
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "build": "node-sass src/ -o lib && tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\" \"src/**/*.js\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "keywords": [
+    "React",
+    "Bootstrap",
+    "Loader"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scrumble-nl/react-quick-loader.git"
+  },
+  "author": "Scrumble",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scrumble-nl/react-quick-loader/issues"
+  },
+  "homepage": "https://github.com/scrumble-nl/react-quick-loader#readme",
+  "files": [
+    "lib/**/*"
+  ],
+  "peerDependencies": {
+    "react": "^16.9.0"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.5.5",
+    "axios": "^0.19.2",
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0",
+    "react-loading": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^25.1.2",
+    "@types/node-sass": "^4.11.0",
+    "@types/react": "^16.9.2",
+    "jest": "^25.2.4",
+    "node-sass": "^4.13.1",
+    "prettier": "^1.18.2",
+    "ts-jest": "^25.2.0",
+    "tslint": "^5.19.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-eslint-rules": "^5.4.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.6.2"
+  },
+  "directories": {
+    "lib": "lib"
+  }
+}
