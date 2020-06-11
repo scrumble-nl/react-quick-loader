@@ -1,4 +1,4 @@
-# Quick-Toaster
+# Quick-Loader
 A quick and easy wrapper for retrieving information async while displaying a loader
 
 ## Quick
@@ -24,7 +24,7 @@ Both wil pass the data to the `data` property to all of their children.
 The actual implementations are as followed:
 
 ### Url variant
-1. Import `QuickLoader` in the component where you want to create a toast
+1. Import `QuickLoader`
 2. Implement the loader by giving it a `color`, `url` and at least one child component.
  3. (optional) add `errorCallback` for handling the potential ajax errors
 
@@ -54,7 +54,7 @@ The following options can be used for customization:
 
 ### Data variant
 The actual implementation is as follows:
-1. Import `QuickLoader` in the component where you want to create a toast
+1. Import `QuickLoader`
 2. Implement the loader by giving it a `color`, `data` and at least one child component
     1. As long as the `data` property is undefined it will show a loader
 
