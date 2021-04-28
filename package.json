@@ -1,6 +1,6 @@
 {
   "name": "@scrumble-nl/react-quick-loader",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A quick and easy wrapper for retrieving information async while displaying a loader.\n\n",
   "main": "lib/quick-loader.js",
   "types": "lib/quick-loader.d.ts",

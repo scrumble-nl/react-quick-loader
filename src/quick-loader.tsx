@@ -100,8 +100,10 @@ class QuickLoader extends React.Component<props, state> {
                     width={this.state.width}
                 />
             </div>
-        ) : (
+        ) : children ? (
             children
+        ) : (
+            <></>
         );
     };
 }
