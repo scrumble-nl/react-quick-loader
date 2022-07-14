@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 
 import axios from 'axios';
 import ReactLoading from 'react-loading';
@@ -8,6 +8,7 @@ import './scss/loader.css';
 type baseProps = {
     color: string;
     type: 'blank' | 'balls' | 'bars' | 'bubbles' | 'cubes' | 'cylon' | 'spin' | 'spinningBubbles' | 'spokes';
+    children: ReactElement | ReactElement[];
 };
 
 type dataProps = baseProps & {
@@ -86,25 +87,27 @@ class QuickLoader extends React.Component<props, state> {
 
     render = (): JSX.Element | JSX.Element[] => {
         const children = React.Children.map(this.props.children, child => {
-            return React.cloneElement(child as React.ReactElement<any>, {
-                data: this.state.data,
-            });
+            return React.cloneElement(child, {data: this.state.data});
         });
 
-        return this.state.loading ? (
-            <div className="spinner-container">
-                <ReactLoading
-                    className="react-loading"
-                    type={this.props.type}
-                    color={this.props.color}
-                    width={this.state.width}
-                />
-            </div>
-        ) : children ? (
-            children
-        ) : (
-            <></>
-        );
+        if (this.state.loading) {
+            return (
+                <div className="spinner-container">
+                    <ReactLoading
+                        className="react-loading"
+                        type={this.props.type}
+                        color={this.props.color}
+                        width={this.state.width}
+                    />
+                </div>
+            );
+        }
+
+        if (children) {
+            return children;
+        }
+
+        return <></>;
     };
 }
 
