@@ -1,4 +1,4 @@
-# Quick-Toaster
+# Quick-Loader
 A quick and easy wrapper for retrieving information async while displaying a loader
 
 ## Quick
@@ -24,7 +24,7 @@ Both wil pass the data as a `data` prop to all of their children.
 The actual implementations are as follows:
 
 ### Url variant
-1. Import `QuickLoader` in the component where you want to create a toast
+1. Import `QuickLoader` in the component where you want to create a loader
 2. Implement the loader by giving it a `color`, `url` and at least one child component.
 3. (optional) add `errorCallback` for handling the potential errors
 
@@ -44,16 +44,16 @@ export const App = (): JSX.Element => {
 
 The following options can be used for customization:
 
-| Name         | Type                                                                                   | Required | Description                         | Default |
-|--------------|:----------------------------------------------------------------------------------------:|:----------:|:-------------------------------------| -------- |
-| `color`      | string                                                                                 | *true*     | The color for the loader           |  |
-| `url`       | string                                                                                 | *true*    | The url used to retrieve data           |
-| `type`       | 'blank', 'balls', 'bars', 'bubbles', 'cubes', 'cylon', 'spin', 'spinningBubbles', 'spokes'                                                                                 | *false*    | The loader type          | `bars` |
-| `errorCallback`      | (error: any) => void | *false*    | The custom callback for handling the error message                     | `undefined`
+| Name            |                                            Type                                            | Required | Description                                        | Default     |
+|-----------------|:------------------------------------------------------------------------------------------:|:--------:|:---------------------------------------------------|-------------|
+| `color`         |                                           string                                           |  *true*  | The color for the loader                           |             |
+| `url`           |                                           string                                           |  *true*  | The url used to retrieve data                      |             |
+| `type`          | 'blank', 'balls', 'bars', 'bubbles', 'cubes', 'cylon', 'spin', 'spinningBubbles', 'spokes' | *false*  | The loader type                                    | `bars`      |
+| `errorCallback` |                                    (error: any) => void                                    | *false*  | The custom callback for handling the error message | `undefined` |
 
 ### Data variant
 The actual implementation is as follows:
-1. Import `QuickLoader` in the component where you want to create a toast
+1. Import `QuickLoader` in the component where you want to create a loader
 2. Implement the loader by giving it a `color`, `data` and at least one child component
    1. As long as the `data` property is undefined it will show a loader
 
