@@ -5,9 +5,10 @@
   "main": "lib/quick-loader.js",
   "types": "lib/quick-loader.d.ts",
   "scripts": {
-    "build": "node-sass src/ -o lib && tsc",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\" \"src/**/*.js\"",
-    "lint": "eslint \"src/**/*.{ts,tsx,js}\" --fix",
+    "build": "rm -rf lib/ && tsc && cp -r src/scss lib/scss/",
+    "watch": "cp -r src/scss lib/ && (tsc --watch & fswatch -rv src/scss/ | xargs -n1 -I{} cp -rv src/scss lib/)",
+    "eslint": "eslint src",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npm run build",
     "prepublishOnly": "npm run lint",
     "preversion": "npm run lint",
@@ -44,13 +45,12 @@
     "react-loading": "^2.0.3"
   },
   "devDependencies": {
-    "@types/node-sass": "^4.11.3",
+    "@scrumble-nl/eslint-plugin-scrumble-rules": "^2.1.3",
     "@types/react": "^18.0.15",
-    "node-sass": "^7.0.1",
-    "prettier": "^2.7.1",
-    "eslint": "^8.50.0",
     "@typescript-eslint/eslint-plugin": "^6.7.2",
     "@typescript-eslint/parser": "^6.7.2",
+    "eslint": "^8.50.0",
+    "prettier": "^2.7.1",
     "typescript": "^5.2.2"
   },
   "directories": {
