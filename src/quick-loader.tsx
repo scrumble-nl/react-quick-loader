@@ -1,114 +1,87 @@
-import React, {ReactElement} from 'react';
-
+import React, {useState, useEffect, ReactNode, JSX, useMemo} from 'react';
 import axios from 'axios';
 import ReactLoading from 'react-loading';
-
 import './scss/loader.css';
 
-type baseProps = {
+type BaseProps = {
     color: string;
-    type: 'blank' | 'balls' | 'bars' | 'bubbles' | 'cubes' | 'cylon' | 'spin' | 'spinningBubbles' | 'spokes';
-    children: ReactElement | ReactElement[];
+    type?: 'blank' | 'balls' | 'bars' | 'bubbles' | 'cubes' | 'cylon' | 'spin' | 'spinningBubbles' | 'spokes';
+    children: ReactNode | ReactNode[];
 };
 
-type dataProps = baseProps & {
-    data: any;
+type DataProps<T> = {
+    data: T;
 };
 
-type urlProps = baseProps & {
+type UrlProps = {
     url: string;
-    errorCallback?: (error: any) => void;
+    errorCallback?: (error: unknown) => void;
 };
 
-type props = urlProps | dataProps;
+type Props<T> = (UrlProps | DataProps<T>) & BaseProps;
 
-interface state {
-    loading: boolean;
-    width: number;
-    data: any;
-    children?: any;
-}
+function QuickLoader<T>({ type = 'bars', color, ...rest }: Props<T>): JSX.Element {
+    const [loading, setLoading] = useState(true);
+    const [windowWidth, setWindowWidth] = useState(() => window.innerWidth);
+    const [data, setData] = useState<T | null>(null);
 
-class QuickLoader extends React.Component<props, state> {
-    static defaultProps = {
-        type: 'bars',
-    };
+    const width = useMemo(() => (windowWidth <= 768 ? 35 : 50), [windowWidth]);
 
-    state = {
-        loading: true,
-        width: window.innerWidth <= 768 ? 35 : 50,
-        data: {},
-        children: [],
-    };
+    const isDataProps = (props: object): props is DataProps<T> => 'data' in props;
+    const isUrlProps = (props: object): props is UrlProps => 'url' in props;
 
-    componentDidUpdate = (prevProps: Readonly<props>): void => {
-        if ('data' in this.props && prevProps !== this.props) {
-            this.setState({data: this.props.data, loading: false});
+    const updateData = () => {
+        if (isDataProps(rest)) {
+            setData(rest.data);
+            setLoading(false);
+        } else if (isUrlProps(rest)) {
+            retrieveData(rest.url);
         }
+    }
 
-        if ('url' in this.props && 'url' in prevProps && prevProps.url !== this.props.url) {
-            this.retrieveData(this.props.url);
-        }
-    };
+    useEffect(() => {
+        const handleResize = () => setWindowWidth(window.innerWidth);
 
-    componentDidMount = (): void => {
-        window.addEventListener('resize', this.responsiveHandler);
-        this.retrieveData();
-    };
+        window.addEventListener('resize', handleResize);
 
-    componentWillUnmount = (): void => {
-        window.removeEventListener('resize', this.responsiveHandler);
-    };
+        updateData();
 
-    retrieveData = (url?: any): void => {
-        if ('data' in this.props) {
-            this.setState({data: this.props.data, loading: false});
-            return;
-        }
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
+    useEffect(() => {
+        updateData();
+    }, [JSON.stringify(rest)]);
+
+    const retrieveData = (url: string) => {
         axios
-            .get(url || this.props.url)
+            .get<T>(url)
             .then(response => {
-                this.setState({
-                    loading: false,
-                    data: response.data,
-                });
+                setData(response.data);
+                setLoading(false);
             })
             .catch(error => {
-                if ('errorCallback' in this.props && this.props.errorCallback) {
-                    this.props.errorCallback(error);
+                if ('errorCallback' in rest && rest.errorCallback) {
+                    rest.errorCallback(error);
                 }
             });
     };
 
-    responsiveHandler = (): void => {
-        this.setState({width: window.innerWidth <= 768 ? 35 : 50});
-    };
+    const enhancedChildren = React.Children.map(rest.children, child =>
+        React.isValidElement(child) ? React.cloneElement(child, { data }) : child
+    );
 
-    render = (): JSX.Element | JSX.Element[] => {
-        const children = React.Children.map(this.props.children, child => {
-            return React.cloneElement(child, {data: this.state.data});
-        });
+    if (loading) {
+        return (
+            <div className="spinner-container">
+                <ReactLoading className="react-loading" type={type} color={color} width={width} />
+            </div>
+        );
+    }
 
-        if (this.state.loading) {
-            return (
-                <div className="spinner-container">
-                    <ReactLoading
-                        className="react-loading"
-                        type={this.props.type}
-                        color={this.props.color}
-                        width={this.state.width}
-                    />
-                </div>
-            );
-        }
-
-        if (children) {
-            return children;
-        }
-
-        return <></>;
-    };
+    return <>{enhancedChildren}</>;
 }
 
 export default QuickLoader;
