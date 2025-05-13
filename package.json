@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node-sass src/ -o lib && tsc",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\" \"src/**/*.js\"",
-    "lint": "tslint -p tsconfig.json",
+    "lint": "eslint \"src/**/*.{ts,tsx,js}\" --fix",
     "prepare": "npm run build",
     "prepublishOnly": "npm run lint",
     "preversion": "npm run lint",
@@ -48,11 +48,10 @@
     "@types/react": "^18.0.15",
     "node-sass": "^7.0.1",
     "prettier": "^2.7.1",
-    "tslint": "^6.1.3",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-eslint-rules": "^5.4.0",
-    "tslint-plugin-prettier": "^2.3.0",
-    "typescript": "^4.7.4"
+    "eslint": "^8.50.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
+    "@typescript-eslint/parser": "^6.7.2",
+    "typescript": "^5.2.2"
   },
   "directories": {
     "lib": "lib"
