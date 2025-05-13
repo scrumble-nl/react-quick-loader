@@ -37,7 +37,7 @@ function QuickLoader<T>({ type = 'bars', color, ...rest }: Props<T>): JSX.Elemen
         } else if (isUrlProps(rest)) {
             retrieveData(rest.url);
         }
-    }
+    };
 
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth);
@@ -69,19 +69,21 @@ function QuickLoader<T>({ type = 'bars', color, ...rest }: Props<T>): JSX.Elemen
             });
     };
 
-    const enhancedChildren = React.Children.map(rest.children, child =>
-        React.isValidElement(child) ? React.cloneElement(child, { data }) : child
+    const enhancedChildren = React.Children.map(rest.children, child => {
+        if (React.isValidElement(child)) {
+            return React.cloneElement(child as React.ReactElement<{ data: T|null }>, {...(child.props as object), data});
+        }
+
+        return child;
+    });
+
+    return loading ? (
+        <div className="spinner-container">
+            <ReactLoading className="react-loading" type={type} color={color} width={width} />
+        </div>
+    ) : (
+        <>{enhancedChildren}</>
     );
-
-    if (loading) {
-        return (
-            <div className="spinner-container">
-                <ReactLoading className="react-loading" type={type} color={color} width={width} />
-            </div>
-        );
-    }
-
-    return <>{enhancedChildren}</>;
 }
 
 export default QuickLoader;
