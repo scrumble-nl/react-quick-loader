@@ -2,13 +2,13 @@
   "compilerOptions": {
     "module": "CommonJS",
     "declaration": true,
-    "strict": false,
+    "strict": true,
     "outDir": "./lib",
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "esModuleInterop": true,
     "jsx": "react",
     "strictNullChecks": true,
-    "lib": ["es5", "es2015", "es2016", "dom"],
+    "lib": ["es2020", "dom"],
     "moduleResolution": "node"
   },
   "include": ["src"],

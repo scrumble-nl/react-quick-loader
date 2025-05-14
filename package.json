@@ -5,10 +5,10 @@
   "main": "lib/quick-loader.js",
   "types": "lib/quick-loader.d.ts",
   "scripts": {
-    "test": "jest --config jestconfig.json",
-    "build": "node-sass src/ -o lib && tsc",
-    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\" \"src/**/*.js\"",
-    "lint": "tslint -p tsconfig.json",
+    "build": "rm -rf lib/ && tsc && cp -r src/scss lib/scss/",
+    "watch": "cp -r src/scss lib/ && (tsc --watch & fswatch -rv src/scss/ | xargs -n1 -I{} cp -rv src/scss lib/)",
+    "eslint": "eslint src",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npm run build",
     "prepublishOnly": "npm run lint",
     "preversion": "npm run lint",
@@ -34,29 +34,31 @@
     "lib/**/*"
   ],
   "peerDependencies": {
-    "react": "^18.2.0"
+    "react": "^18.2.0 || ^19.1.0"
   },
   "dependencies": {
-    "@babel/cli": "^7.18.6",
-    "@babel/core": "^7.18.6",
-    "axios": "^0.27.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "@babel/cli": "^7.27.2",
+    "@babel/core": "^7.27.1",
+    "axios": "^1.9.0",
+    "react": "^18.2.0 || ^19.1.0",
+    "react-dom": "^19.1.0",
     "react-loading": "^2.0.3"
   },
   "devDependencies": {
-    "@types/jest": "^28.1.5",
-    "@types/node-sass": "^4.11.3",
-    "@types/react": "^18.0.15",
-    "jest": "^28.1.3",
-    "node-sass": "^7.0.1",
-    "prettier": "^2.7.1",
-    "ts-jest": "^28.0.6",
-    "tslint": "^6.1.3",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-eslint-rules": "^5.4.0",
-    "tslint-plugin-prettier": "^2.3.0",
-    "typescript": "^4.7.4"
+    "@eslint/compat": "^1.2.9",
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.26.0",
+    "@scrumble-nl/eslint-plugin-scrumble-rules": "^2.1.3",
+    "@types/react": "^19.1.4",
+    "@typescript-eslint/eslint-plugin": "^8.32.1",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint": "^9.26.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.4.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
   },
   "directories": {
     "lib": "lib"
