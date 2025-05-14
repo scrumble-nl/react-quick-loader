@@ -25,7 +25,7 @@ type Props<T, E = unknown> = (UrlProps<E> | DataProps<T>) & BaseProps<T>;
 const isDataProps = (props: object): props is DataProps<unknown> => 'data' in props;
 const isUrlProps = (props: object): props is UrlProps<unknown> => 'url' in props;
 
-function QuickLoader<T, E>({type = 'bars', color, ...rest}: Props<T, E>): JSX.Element {
+const QuickLoader = <T, E>({type = 'bars', color, ...rest}: Props<T, E>): JSX.Element => {
     const [loading, setLoading] = useState(true);
     const [windowWidth, setWindowWidth] = useState(() => window.innerWidth);
     const [componentData, setComponentData] = useState<T | null>(null);
@@ -75,6 +75,6 @@ function QuickLoader<T, E>({type = 'bars', color, ...rest}: Props<T, E>): JSX.El
     ) : (
         <>{enhancedChildren}</>
     );
-}
+};
 
 export default QuickLoader;
