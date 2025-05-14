@@ -5,7 +5,7 @@ import './scss/loader.css';
 
 type BaseProps<T> = {
     color: string;
-    type?: 'blank' | 'balls' | 'bars' | 'bubbles' | 'cubes' | 'cylon' | 'spin' | 'spinningBubbles' | 'spokes';
+    type?: ReactLoading['props']['type'];
     children: ReactElement<{data: T | null}> | ReactElement<{data: T | null}>[];
 };
 
