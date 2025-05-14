@@ -1,6 +1,8 @@
 import React, {JSX, ReactElement, useEffect, useMemo, useState} from 'react';
+
 import axios, {Canceler} from 'axios';
 import ReactLoading from 'react-loading';
+
 import './scss/loader.css';
 
 type BaseProps<T> = {
