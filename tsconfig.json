@@ -2,13 +2,13 @@
   "compilerOptions": {
     "module": "CommonJS",
     "declaration": true,
-    "strict": true, // Enabled strict mode
+    "strict": true,
     "outDir": "./lib",
-    "noImplicitAny": true, // Enabled noImplicitAny
+    "noImplicitAny": true,
     "esModuleInterop": true,
     "jsx": "react",
     "strictNullChecks": true,
-    "lib": ["es2020", "dom"], // Updated libraries
+    "lib": ["es2020", "dom"],
     "moduleResolution": "node"
   },
   "include": ["src"],

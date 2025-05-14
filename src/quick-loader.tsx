@@ -1,4 +1,4 @@
-import React, {JSX, ReactElement, useEffect, useMemo, useState} from 'react';
+import React, {JSX, ReactElement, useEffect, useState} from 'react';
 
 import axios from 'axios';
 import ReactLoading from 'react-loading';
@@ -29,8 +29,6 @@ function QuickLoader<T, E>({type = 'bars', color, ...rest}: Props<T, E>): JSX.El
     const [loading, setLoading] = useState(true);
     const [windowWidth, setWindowWidth] = useState(() => window.innerWidth);
     const [componentData, setComponentData] = useState<T | null>(null);
-
-    const width = useMemo(() => (windowWidth <= 768 ? 35 : 50), [windowWidth]);
 
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth);
@@ -72,7 +70,7 @@ function QuickLoader<T, E>({type = 'bars', color, ...rest}: Props<T, E>): JSX.El
 
     return loading ? (
         <div className="spinner-container">
-            <ReactLoading className="react-loading" type={type} color={color} width={width} />
+            <ReactLoading className="react-loading" type={type} color={color} width={windowWidth <= 768 ? 35 : 50} />
         </div>
     ) : (
         <>{enhancedChildren}</>
