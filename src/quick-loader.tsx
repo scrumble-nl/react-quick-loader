@@ -1,50 +1,39 @@
-import React, {useState, useEffect, ReactNode, JSX, useMemo} from 'react';
-import axios from 'axios';
+import React, {JSX, ReactElement, useEffect, useMemo, useState} from 'react';
+import axios, {Canceler} from 'axios';
 import ReactLoading from 'react-loading';
 import './scss/loader.css';
 
-type BaseProps = {
+type BaseProps<T> = {
     color: string;
     type?: 'blank' | 'balls' | 'bars' | 'bubbles' | 'cubes' | 'cylon' | 'spin' | 'spinningBubbles' | 'spokes';
-    children: ReactNode | ReactNode[];
+    children: ReactElement<{data: T | null}> | ReactElement<{data: T | null}>[];
 };
 
 type DataProps<T> = {
     data: T;
 };
 
-type UrlProps = {
+type UrlProps<E> = {
     url: string;
-    errorCallback?: (error: unknown) => void;
+    errorCallback?: (error: E) => void;
 };
 
-type Props<T> = (UrlProps | DataProps<T>) & BaseProps;
+type Props<T, E = unknown> = (UrlProps<E> | DataProps<T>) & BaseProps<T>;
 
-function QuickLoader<T>({ type = 'bars', color, ...rest }: Props<T>): JSX.Element {
+const isDataProps = <T extends any>(props: object): props is DataProps<T> => 'data' in props;
+const isUrlProps = <E extends any>(props: object): props is UrlProps<E> => 'url' in props;
+
+function QuickLoader<T, E>({type = 'bars', color, ...rest}: Props<T, E>): JSX.Element {
     const [loading, setLoading] = useState(true);
     const [windowWidth, setWindowWidth] = useState(() => window.innerWidth);
     const [data, setData] = useState<T | null>(null);
 
     const width = useMemo(() => (windowWidth <= 768 ? 35 : 50), [windowWidth]);
 
-    const isDataProps = (props: object): props is DataProps<T> => 'data' in props;
-    const isUrlProps = (props: object): props is UrlProps => 'url' in props;
-
-    const updateData = () => {
-        if (isDataProps(rest)) {
-            setData(rest.data);
-            setLoading(false);
-        } else if (isUrlProps(rest)) {
-            retrieveData(rest.url);
-        }
-    };
-
     useEffect(() => {
         const handleResize = () => setWindowWidth(window.innerWidth);
 
         window.addEventListener('resize', handleResize);
-
-        updateData();
 
         return () => {
             window.removeEventListener('resize', handleResize);
@@ -52,30 +41,31 @@ function QuickLoader<T>({ type = 'bars', color, ...rest }: Props<T>): JSX.Elemen
     }, []);
 
     useEffect(() => {
-        updateData();
+        if (isDataProps(rest)) {
+            setData(rest.data);
+            setLoading(false);
+        } else if (isUrlProps(rest)) {
+            return retrieveData(rest.url, rest.errorCallback);
+        }
     }, [JSON.stringify(rest)]);
 
-    const retrieveData = (url: string) => {
+    const retrieveData = (url: string, errorCallback?: (error: E) => unknown): Canceler => {
+        const {token, cancel} = axios.CancelToken.source();
+
         axios
-            .get<T>(url)
+            .get<T>(url, {cancelToken: token})
             .then(response => {
                 setData(response.data);
                 setLoading(false);
             })
-            .catch(error => {
-                if ('errorCallback' in rest && rest.errorCallback) {
-                    rest.errorCallback(error);
-                }
-            });
+            .catch(errorCallback ?? (() => null));
+
+        return cancel;
     };
 
-    const enhancedChildren = React.Children.map(rest.children, child => {
-        if (React.isValidElement(child)) {
-            return React.cloneElement(child as React.ReactElement<{ data: T|null }>, {...(child.props as object), data});
-        }
-
-        return child;
-    });
+    const enhancedChildren = React.Children.map(rest.children, child =>
+        React.isValidElement(child) ? React.cloneElement(child, {...(child.props as object), data}) : child,
+    );
 
     return loading ? (
         <div className="spinner-container">
