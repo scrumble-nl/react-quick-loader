@@ -1,6 +1,6 @@
 import React, {JSX, ReactElement, useEffect, useMemo, useState} from 'react';
 
-import axios, {Canceler} from 'axios';
+import axios from 'axios';
 import ReactLoading from 'react-loading';
 
 import './scss/loader.css';
@@ -22,13 +22,13 @@ type UrlProps<E> = {
 
 type Props<T, E = unknown> = (UrlProps<E> | DataProps<T>) & BaseProps<T>;
 
-const isDataProps = <T extends any>(props: object): props is DataProps<T> => 'data' in props;
-const isUrlProps = <E extends any>(props: object): props is UrlProps<E> => 'url' in props;
+const isDataProps = (props: object): props is DataProps<unknown> => 'data' in props;
+const isUrlProps = (props: object): props is UrlProps<unknown> => 'url' in props;
 
 function QuickLoader<T, E>({type = 'bars', color, ...rest}: Props<T, E>): JSX.Element {
     const [loading, setLoading] = useState(true);
     const [windowWidth, setWindowWidth] = useState(() => window.innerWidth);
-    const [data, setData] = useState<T | null>(null);
+    const [componentData, setComponentData] = useState<T | null>(null);
 
     const width = useMemo(() => (windowWidth <= 768 ? 35 : 50), [windowWidth]);
 
@@ -42,31 +42,32 @@ function QuickLoader<T, E>({type = 'bars', color, ...rest}: Props<T, E>): JSX.El
         };
     }, []);
 
+    // Needed since `useEffect` does not provide deep comparison and only does an `Object.is` check
+    const {data, url} = {data: null, url: null, ...rest};
+
     useEffect(() => {
         if (isDataProps(rest)) {
-            setData(rest.data);
+            setComponentData(data);
             setLoading(false);
         } else if (isUrlProps(rest)) {
-            return retrieveData(rest.url, rest.errorCallback);
+            const {token, cancel} = axios.CancelToken.source();
+
+            axios
+                .get<T>(rest.url, {cancelToken: token})
+                .then(response => {
+                    setComponentData(response.data);
+                    setLoading(false);
+                })
+                .catch(rest.errorCallback ?? (() => null));
+
+            return cancel;
         }
-    }, [JSON.stringify(rest)]);
-
-    const retrieveData = (url: string, errorCallback?: (error: E) => unknown): Canceler => {
-        const {token, cancel} = axios.CancelToken.source();
-
-        axios
-            .get<T>(url, {cancelToken: token})
-            .then(response => {
-                setData(response.data);
-                setLoading(false);
-            })
-            .catch(errorCallback ?? (() => null));
-
-        return cancel;
-    };
+    }, [rest, data, url]);
 
     const enhancedChildren = React.Children.map(rest.children, child =>
-        React.isValidElement(child) ? React.cloneElement(child, {...(child.props as object), data}) : child,
+        React.isValidElement(child)
+            ? React.cloneElement(child, {...(child.props as object), data: componentData})
+            : child,
     );
 
     return loading ? (
