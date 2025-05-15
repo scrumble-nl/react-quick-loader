@@ -7,6 +7,7 @@
   "scripts": {
     "build": "rm -rf lib/ && tsc && cp -r src/scss lib/scss/",
     "watch": "cp -r src/scss lib/ && (tsc --watch & fswatch -rv src/scss/ | xargs -n1 -I{} cp -rv src/scss lib/)",
+    "lint": "npm run eslint",
     "eslint": "eslint src",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "npm run build",
